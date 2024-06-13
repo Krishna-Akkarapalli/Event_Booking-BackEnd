@@ -1,4 +1,5 @@
 const Event = require("../Models/Concert.js");
+const Booking = require('../Models/BookingSeats.js');
 const errorHandler = require("../Utils/error");
 
 exports.concertdata = async (req, res, next)=>{
@@ -93,39 +94,75 @@ exports.getConcertOne = async (req,res,next) => {
 
 };
 
-// router.get('/movie-tickets', async (req, res) => {
-    exports.getConcertTickets = async (req, res) => {
+exports.createBooking = async (req, res) => {
     try {
-      const movieEvents = await Event.find({ showType: 'movie' }).exec();
-      res.json(movieEvents);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
+      const { userName, email, selectedSeats, totalPrice } = req.body;
+      const booking = new Booking({
+        userName,
+        email,
+        selectedSeats,
+        totalPrice
+      });
+      await booking.save();
+      res.status(201).json({ success: true, message: 'Booking created successfully' });
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      res.status(500).json({ success: false, error: 'Failed to create booking' });
     }
   };
 
+
+
+
+// router.get('/movie-tickets', async (req, res) => {
+//   exports.getConcertTickets = async (req, res) => {
+//     try {
+//       const movieEvents = await Concert.find({ showType: 'movie' }).exec();
+//       res.setHeader('Content-Type', 'application/json'); // Set header
+//       res.json(movieEvents); // Send JSON response
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Internal Server Error');
+//     }
+//   };
+
 //   router.post('/movie-tickets', async (req, res) => {
-    exports.postConcertTickets = async (req, res) => {
-    try {
-      const { eventId, seats } = req.body;
-      // Find the event and update the seats availability
-      const event = await Event.findById(eventId).exec();
-      if (!event) {
-        return res.status(404).send('Event not found');
-      }
-  
-      // Logic to book the seats (assuming seats is an array of seat IDs)
-      seats.forEach((seatId) => {
-        const seat = event.seats.id(seatId);
-        if (seat && seat.isAvailable) {
-          seat.isAvailable = false; // Mark seat as booked
-        }
-      });
-  
-      await event.save(); // Save the updated event
-      res.status(200).send('Booking successful');
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
-    }
-  };
+//   exports.postConcertTickets = async (req, res) => {
+//     try {
+//         const { eventId, seats } = req.body;
+//         const event = await Concert.findById(eventId).exec();
+//         if (!event) {
+//             return res.status(404).send('Event not found');
+//         }
+
+//         seats.forEach((seatId) => {
+//             const seat = event.seats.id(seatId);
+//             if (seat && seat.isAvailable) {
+//                 seat.isAvailable = false; // Mark seat as booked
+//             }
+//         });
+
+//         await event.save(); // Save the updated event
+//         res.status(200).send('Booking successful');
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+
+
+
+
+//   exports.getSeatsByEventId = async (req, res) => {
+//     try {
+//         const eventId = req.params.eventId;
+//         const event = await Concert.findById(eventId).exec();
+//         if (!event) {
+//             return res.status(404).send({ success: false, message: 'Event not found' });
+//         }
+//         res.json({ success: true, seats: event.seats });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).send({ success: false, message: 'Internal Server Error' });
+//     }
+// };

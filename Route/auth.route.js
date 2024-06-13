@@ -1,7 +1,7 @@
 const express = require ("express");
 const { signup, signin,  google, signout} = require("../Controller/auth.controller");
 // const { google } = require("../Controller/oauth.controller");
-const {concertdata,getConcert,getConcertOne, addConcert,postConcertTickets,getConcertTickets} = require("../Controller/concert.controller")
+const {concertdata,getConcert,getConcertOne,createBooking, addConcert,postConcertTickets,getConcertTickets,getSeatsByEventId} = require("../Controller/concert.controller")
 
 const router = express.Router();
 
@@ -13,7 +13,9 @@ router.post("/addc" ,concertdata);
 // router.post("/addmany" ,addConcert);
 router.get("/getart", getConcert);
 router.get("/getartone/:id", getConcertOne);
-router.post("/consertTickPost",postConcertTickets);
-router.get("/consertTickGet",getConcertTickets);
+router.post('/bookings', createBooking);
+// router.post('/consertTickPost', postConcertTickets);
+// router.get("/consertTickGet",getConcertTickets);
+// router.get('/getSeats/:eventId', getSeatsByEventId);
 
 module.exports = router;
